@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+const Package = require("./package");
 
 const user = new Schema({
 	username: {
@@ -20,6 +21,11 @@ const user = new Schema({
 		enum: ["admin", "op"],
 		default: "op",
 		required: true,
+	},
+	package: {
+		type: mongoose.SchemaTypes.ObjectId,
+		ref: "Package",
+		required: false,
 	},
 });
 
@@ -53,4 +59,6 @@ const user = new Schema({
 	});
 }); */
 
-module.exports = model("User", user);
+const User = model("User", user);
+
+module.exports = User;

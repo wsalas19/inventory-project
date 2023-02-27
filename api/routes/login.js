@@ -2,11 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var express = require("express");
 var router = express.Router();
-const user = require("../models/user");
+const User = require("../models/user");
 
 router.post("/", (req, res) => {
 	let body = req.body;
-	user.findOne({ email: body.email }, (error, userDB) => {
+	User.findOne({ email: body.email }, (error, userDB) => {
 		if (error) {
 			return res.status(500).json({
 				ok: false,
