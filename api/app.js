@@ -8,6 +8,7 @@ require("dotenv").config();
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var loginRouter = require("./routes/login");
 const PORT = process.env.PORT || 3001;
 
 const URI = process.env.MONGO_URI;
@@ -20,8 +21,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+//endpoints
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/login", loginRouter);
 
 //db connect
 mongoose.set("strictQuery", true);
