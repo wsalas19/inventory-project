@@ -27,8 +27,8 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
 	const { name, notes, image, user } = req.body;
 	console.log(user);
-	let target = await User.findOne({ username: user }).exec();
 	try {
+		let target = await User.findOne({ username: user }).exec();
 		const new_package = {
 			name,
 			notes,
@@ -36,11 +36,12 @@ router.post("/", async (req, res) => {
 			user: target._id,
 		};
 
-		//const target_user = User.findOne({ username: user });
+		//creates the new package
 		const created_package = Package(new_package);
-		//target_user.package = created_package;
 		let response = await created_package.save();
-		await User.updateOne({ username: name }, { package: created_package._id });
+		//asigns the new package to the target user
+		target.package = created_package._id;
+		await target.save();
 		res.status(201).send({ response });
 	} catch (error) {
 		res.status(409).send({ error: error.message });
