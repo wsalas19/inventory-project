@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 router.post("/", (req, res) => {
 	let body = req.body;
-	User.findOne({ email: body.email }, (error, userDB) => {
+	User.findOne({ username: body.username }, (error, userDB) => {
 		if (error) {
 			return res.status(500).json({
 				ok: false,
@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
 		);
 		res.json({
 			ok: true,
-			usuario: userDB,
+			user: userDB,
 			token,
 		});
 	});

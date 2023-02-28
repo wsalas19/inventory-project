@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 let mongoose = require("mongoose");
 require("dotenv").config();
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -16,6 +17,7 @@ const URI = process.env.MONGO_URI;
 
 var app = express();
 
+app.use(cors({ origin: "http://127.0.0.1:5173" }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
