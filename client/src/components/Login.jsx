@@ -5,7 +5,7 @@ import {
 	/* FormErrorMessage,
 	FormHelperText, */
 } from "@chakra-ui/react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/actions";
 import React, { useState } from "react";
@@ -14,6 +14,7 @@ function Login() {
 	const [input, setInput] = useState({ username: "", password: "" });
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -37,7 +38,7 @@ function Login() {
 			setInput({ username: "", password: "" });
 			console.log(res.data);
 
-			redirect("/");
+			navigate("/", { replace: true });
 		} catch (error) {
 			console.log(error);
 		}
