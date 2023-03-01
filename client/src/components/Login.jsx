@@ -5,14 +5,16 @@ import {
 	/* FormErrorMessage,
 	FormHelperText, */
 } from "@chakra-ui/react";
+import { redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { cleanUser, setUser } from "../redux/actions";
+import { setUser } from "../redux/actions";
 import React, { useState } from "react";
-import axios from "axios";
 
 function Login() {
 	const [input, setInput] = useState({ username: "", password: "" });
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setInput({
@@ -22,20 +24,20 @@ function Login() {
 		/* setErrors(
 			validate({
 				...input,
-				[e.target.name]: e.target.value,
+				[name]: value,
 			})
 		); */
 	};
-	const handleLogOut = (e) => {
-		e.preventDefault();
-		dispatch(cleanUser());
-	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
 			dispatch(setUser(input));
+
 			setInput({ username: "", password: "" });
 			console.log(res.data);
+
+			redirect("/");
 		} catch (error) {
 			console.log(error);
 		}
@@ -51,11 +53,13 @@ function Login() {
 	return (
 		<>
 			<Flex
+				ml={"25%"}
 				w={"100svh"}
-				/* bg={"red.200"} */
+				alignSelf={"center"}
+				h={"100svh"}
 				alignItems={"center"}
 				justifyContent={"center"}
-				p={"100px"}
+				p={"50px"}
 				flexDirection={"column"}
 			>
 				<Heading size={"lg"}>Login</Heading>
@@ -85,11 +89,9 @@ function Login() {
 						type="submit"
 						w={"full"}
 						colorScheme={"blue"}
+						isLoading={loading}
 					>
 						Login
-					</Button>
-					<Button onClick={handleLogOut} w={"full"} colorScheme={"red"}>
-						Test
 					</Button>
 				</VStack>
 			</Flex>
