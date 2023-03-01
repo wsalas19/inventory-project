@@ -1,4 +1,11 @@
-import { Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
+import {
+	Button,
+	Flex,
+	Heading,
+	Input,
+	VStack,
+	useToast,
+} from "@chakra-ui/react";
 import {
 	FormControl,
 	FormLabel,
@@ -6,7 +13,7 @@ import {
 	FormHelperText, */
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/actions";
 import React, { useState } from "react";
 
@@ -15,6 +22,8 @@ function Login() {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const errorLogin = useSelector((state) => state.users.error);
+	const toast = useToast();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -33,14 +42,17 @@ function Login() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			dispatch(setUser(input));
-
+			await dispatch(setUser(input));
 			setInput({ username: "", password: "" });
-			console.log(res.data);
-
 			navigate("/", { replace: true });
 		} catch (error) {
-			console.log(error);
+			toast({
+				title: "Login Error",
+				description: `${error.message}`,
+				status: "error",
+				duration: 2000,
+				isClosable: true,
+			});
 		}
 		/* try {
 			let res = await axios.post("/login", input);

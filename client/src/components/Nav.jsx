@@ -16,7 +16,7 @@ import { FaMapMarkerAlt, FaInfoCircle, FaUserPlus } from "react-icons/fa";
 
 function Nav() {
 	const user = useSelector((state) => state.users.user);
-	const { role, username } = user.user;
+	const { role } = user.user;
 	const dispatch = useDispatch();
 	const handleLogOut = (e) => {
 		e.preventDefault();
@@ -38,7 +38,7 @@ function Nav() {
 						</Heading>
 						<Tag
 							alignSelf={"flex-start"}
-							colorScheme={"blue"}
+							colorScheme={role === "op" ? "blue" : "yellow"}
 							w={"fit-content"}
 						>
 							{role}

@@ -5,13 +5,17 @@ const userSlice = createSlice({
 	initialState: {
 		user: {},
 		allUsers: [],
+		error: {},
 	},
 	reducers: {
 		getAllUsers: (state, action) => {
-			state.allUsers = action.payload;
+			state.allUsers = action.payload.filter((u) => u.role !== "admin");
 		},
 		setUserSesion: (state, action) => {
-			state.user = action.payload;
+			if (action.payload.ok) {
+				state.user = action.payload;
+			}
+			state.error = action.payload;
 		},
 		cleanUserSession: (state, action) => {
 			state.user = {};
