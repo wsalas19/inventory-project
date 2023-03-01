@@ -64,6 +64,20 @@ function Create() {
 			console.log(error);
 		}
 	};
+
+	function handleFileInputChange(event) {
+		const { name } = event.target;
+		const file = event.target.files[0];
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => {
+			const imageDataUrl = reader.result;
+			console.log(JSON.stringify(imageDataUrl));
+			// You can send the imageDataUrl to your backend to store it as a string
+			setInputPackage({ ...inputPackage, [name]: imageDataUrl });
+		};
+	}
+
 	useEffect(() => {
 		dispatch(getAllUsersLoaded());
 	}, [create]);
@@ -134,8 +148,7 @@ function Create() {
 						/>
 						<FormLabel>Image:</FormLabel>
 						<Input
-							onChange={handlePackageInput}
-							value={inputPackage.image}
+							onChange={handleFileInputChange}
 							name="image"
 							type={"file"}
 							w={"20%"}
@@ -149,7 +162,7 @@ function Create() {
 						>
 							{users.map((u) => {
 								return (
-									<option key={u._id} value={u._id}>
+									<option key={u._id} value={u.username}>
 										{u.username}
 									</option>
 								);

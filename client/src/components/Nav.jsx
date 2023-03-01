@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { cleanUser } from "../redux/actions";
+import { cleanPackage, cleanUser } from "../redux/actions";
 import "../styles/App.css";
 import { FaMapMarkerAlt, FaInfoCircle, FaUserPlus } from "react-icons/fa";
 
@@ -21,6 +21,7 @@ function Nav() {
 	const handleLogOut = (e) => {
 		e.preventDefault();
 		dispatch(cleanUser());
+		dispatch(cleanPackage());
 	};
 	return (
 		<>

@@ -7,20 +7,18 @@ router.get("/", async (req, res) => {
 	const { id } = req.query;
 	if (id) {
 		try {
-			if (id) {
-				let response = await Package.findById(id);
-				res.status(200).send(response);
-			}
+			let response = await Package.findById(id);
+			return res.status(200).send(response);
 		} catch (error) {
-			res.status(400).send({ error: error.toString() });
+			return res.status(400).send({ error: error.toString() });
 		}
 	}
 
 	try {
 		let response = await Package.find();
-		res.status(200).send(response);
+		return res.status(200).send(response);
 	} catch (error) {
-		res.status(400).send({ error: error.toString() });
+		return res.status(400).send({ error: error.toString() });
 	}
 });
 

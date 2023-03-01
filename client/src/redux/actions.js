@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getUserPackage, cleanPackageSession } from "./package";
 import { setUserSesion, cleanUserSession, getAllUsers } from "./users";
 
 export const setUser = (input) => async (dispatch) => {
@@ -12,6 +13,9 @@ export const setUser = (input) => async (dispatch) => {
 export const cleanUser = () => (dispatch) => {
 	return dispatch(cleanUserSession());
 };
+export const cleanPackage = () => (dispatch) => {
+	return dispatch(cleanPackageSession());
+};
 
 export const getAllUsersLoaded = () => async (dispatch) => {
 	try {
@@ -19,6 +23,15 @@ export const getAllUsersLoaded = () => async (dispatch) => {
 		return dispatch(getAllUsers(res.data));
 	} catch (error) {
 		throw new Error(error.response.data.error.message);
+	}
+};
+
+export const getPackageUser = (id) => async (dispatch) => {
+	try {
+		let res = await axios.get(`/packages?id=${id}`);
+		return dispatch(getUserPackage(res.data));
+	} catch (error) {
+		console.log(error);
 	}
 };
 

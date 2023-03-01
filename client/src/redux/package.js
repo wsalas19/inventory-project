@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const packageSlice = createSlice({
 	name: "packages",
 	initialState: {
-		package: [],
+		package: {},
 		allPackages: [],
 	},
 	reducers: {
@@ -13,7 +13,13 @@ const packageSlice = createSlice({
 		getUserPackage: (state, action) => {
 			state.package = action.payload;
 		},
+		cleanPackageSession: (state, action) => {
+			state.package = {};
+		},
 	},
 });
+
+export const { getAllPackages, getUserPackage, cleanPackageSession } =
+	packageSlice.actions;
 
 export default packageSlice.reducer;
