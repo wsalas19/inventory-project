@@ -1,8 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap");
 
-.nav-heading {
-	font-family: "Jost", sans-serif;
-}
 .App {
 	display: flex;
 }

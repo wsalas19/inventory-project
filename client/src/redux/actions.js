@@ -43,3 +43,12 @@ export const createUser = (input) => async () => {
 		throw new Error(error.response.data.error.message);
 	}
 };
+
+export const createPackage = (input) => async () => {
+	try {
+		let res = await axios.post("/packages", input);
+		return res.data;
+	} catch (error) {
+		console.log(error);
+	}
+};

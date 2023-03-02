@@ -9,7 +9,7 @@ import {
 	Select,
 	useToast,
 } from "@chakra-ui/react";
-import { createUser, getAllUsersLoaded } from "../redux/actions";
+import { createPackage, createUser, getAllUsersLoaded } from "../redux/actions";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -41,6 +41,24 @@ function Create() {
 	const handleSubmitPackage = (e) => {
 		e.preventDefault();
 		console.log(inputPackage);
+		try {
+			dispatch(createPackage(inputPackage));
+			toast({
+				title: "Package Created",
+				description: `${inputPackage.name} was created and was asigned to ${inputPackage.user}`,
+				status: "success",
+				duration: 2000,
+				isClosable: true,
+			});
+			setInputPackage({
+				name: "",
+				notes: "",
+				user: "",
+				image: "",
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	const handleSubmitUser = (e) => {
 		e.preventDefault();
@@ -74,7 +92,10 @@ function Create() {
 			const imageDataUrl = reader.result;
 			console.log(JSON.stringify(imageDataUrl));
 			// You can send the imageDataUrl to your backend to store it as a string
-			setInputPackage({ ...inputPackage, [name]: imageDataUrl });
+			setInputPackage({
+				...inputPackage,
+				[name]: JSON.stringify(imageDataUrl),
+			});
 		};
 	}
 
@@ -148,6 +169,8 @@ function Create() {
 						/>
 						<FormLabel>Image:</FormLabel>
 						<Input
+							alignItems={"center"}
+							textColor={"gray.500"}
 							onChange={handleFileInputChange}
 							name="image"
 							type={"file"}
@@ -155,10 +178,12 @@ function Create() {
 						/>
 						<FormLabel>User:</FormLabel>
 						<Select
+							textColor={"gray.500"}
+							className="userSelect"
 							onChange={handlePackageInput}
 							name="user"
 							w={"20%"}
-							placeholder="select user"
+							placeholder="Select user"
 						>
 							{users.map((u) => {
 								return (
