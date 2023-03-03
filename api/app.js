@@ -19,7 +19,7 @@ var app = express();
 
 app.use(
 	cors({
-		origin: ["http://127.0.0.1:5173", "https://inventory-project.vercel.app"],
+		origin: "https://inventory-project.vercel.app",
 	})
 );
 app.use(logger("dev"));
