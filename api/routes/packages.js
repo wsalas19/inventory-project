@@ -23,12 +23,14 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-	const { name, notes, image, user } = req.body;
+	const { name, notes, image, user, address, coordinates } = req.body;
 	console.log(user);
 	try {
 		let target = await User.findOne({ username: user }).exec();
 		const new_package = {
 			name,
+			address,
+			coordinates,
 			notes,
 			image,
 			user: target._id,
@@ -46,9 +48,14 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.delete("/:id", async (req, res) => {
-	const { id } = req.params;
-
+router.delete("/", async (req, res) => {
+	const { id, all } = req.query;
+	if (all) {
+		let response = await Package.deleteMany({
+			coordinates: [],
+		});
+		return res.status(200).send(response);
+	}
 	try {
 		let response = await Package.findByIdAndDelete(id);
 		res.status(200).send(response);

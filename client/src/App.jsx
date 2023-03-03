@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoutes from "./auth/ProtectedRoutes";
 import Create from "./components/Create";
 import Info from "./components/Info";
-import Login from "./components/Login";
 import Nav from "./components/Nav";
 import Track from "./components/Track";
 

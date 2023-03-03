@@ -22,6 +22,17 @@ const package = new Schema(
 			ref: "User",
 			required: true,
 		},
+		address: { type: String, required: true, maxLength: 100 },
+		coordinates: {
+			type: [Number],
+			required: true,
+			validate: {
+				validator: function (v) {
+					return v.length === 2;
+				},
+				message: "Coordinates must be an array of 2 numbers",
+			},
+		},
 	},
 	{ timestamps: true }
 );

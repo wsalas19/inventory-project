@@ -1,8 +1,17 @@
-import { Box, Flex, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Spinner,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import mapboxgl from "mapbox-gl";
-import { getPackageUser } from "../redux/actions";
+import { getAllPackagesAdmin, getPackageUser } from "../redux/actions";
+import { Link } from "react-router-dom";
 
 function Track() {
 	const dispatch = useDispatch();
@@ -11,6 +20,19 @@ function Track() {
 	const { username, email, role } = user.user;
 	const p = user.user.package;
 	const mapDiv = useRef(null);
+
+	useLayoutEffect(() => {
+		if (role === "op") {
+			dispatch(getPackageUser(p));
+		}
+		if (role === "admin") {
+			dispatch(getAllPackagesAdmin());
+		}
+	}, [user]);
+	const allPackages = useSelector((state) => state.packages.allPackages);
+	const userPackage = useSelector((state) => state.packages.package);
+	const coordinates = userPackage.coordinates;
+
 	//10.963951, -74.822349
 	useLayoutEffect(() => {
 		setTimeout(() => {
@@ -19,20 +41,28 @@ function Track() {
 		const map = new mapboxgl.Map({
 			container: "mainBox", // container ID
 			style: "mapbox://styles/mapbox/streets-v12", // style URL
-			center: [-74.79661, 10.972313], // starting position [lng, lat]
-			zoom: 12, // starting zoom
+			center: /* coordinates || */ [-74.102735, 4.664134], // starting position [lng, lat] // 4.664134, -74.102735
+			zoom: 11, // starting zoom
 		});
-		const marker = new mapboxgl.Marker(mapDiv)
-			.setLngLat([-74.822349, 10.963951])
-			.addTo(map);
+		// change the map style
+		map.setStyle("mapbox://styles/mapbox/light-v10");
+		//set marker for package
+		if (role === "op" && userPackage) {
+			const marker = new mapboxgl.Marker(mapDiv)
+				.setLngLat(coordinates) //4.640344, -74.068341
+				.addTo(map);
+		}
+		if (role === "admin") {
+			allPackages.map((p) => {
+				if (p.coordinates.length > 0) {
+					const marker = new mapboxgl.Marker(mapDiv)
+						.setLngLat(p.coordinates) //4.640344, -74.068341
+						.addTo(map);
+				}
+			});
+		}
 	}, [loading]);
 
-	useEffect(() => {
-		if (role === "op") {
-			dispatch(getPackageUser(p));
-		}
-	}, []);
-	const userPackage = useSelector((state) => state.packages.package);
 	return (
 		<>
 			<Box p={5} w={"75%"}>
@@ -52,7 +82,15 @@ function Track() {
 					<Text color={"gray.500"} fontWeight={"medium"}>
 						Package:
 					</Text>
-					<Text>{p ? p : "No package asigned yet."}</Text>
+					<Text>{p ? userPackage.name : "No package asigned yet."}</Text>
+					{p ? (
+						<Flex flexDirection={"column"}>
+							<Text color={"gray.500"} fontWeight={"medium"}>
+								Package address:
+							</Text>
+							<Text>{userPackage.address}</Text>
+						</Flex>
+					) : null}
 				</VStack>
 				<Heading mt={6} mb={6} size={"md"}>
 					Map
@@ -75,6 +113,21 @@ function Track() {
 						width: "50px",
 					}}
 				></div>
+
+				{role === "admin"
+					? allPackages.map((p) => {
+							return (
+								<div
+									key={p._id}
+									className={"marker"}
+									style={{
+										height: "50px",
+										width: "50px",
+									}}
+								></div>
+							);
+					  })
+					: null}
 			</Box>
 		</>
 	);

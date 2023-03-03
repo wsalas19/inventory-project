@@ -12,10 +12,13 @@ import {
 import { createPackage, createUser, getAllUsersLoaded } from "../redux/actions";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import mapboxgl from "mapbox-gl";
+import axios from "axios";
 
 function Create() {
 	const toast = useToast();
 	const dispatch = useDispatch();
+	const [coord, setCoord] = useState([]);
 	const [inputUser, setInputUser] = useState({
 		username: "",
 		email: "",
@@ -25,6 +28,8 @@ function Create() {
 		name: "",
 		notes: "",
 		user: "",
+		address: "",
+		coordinates: [],
 		image: "",
 	});
 	const [create, setCreate] = useState(false);
@@ -38,10 +43,44 @@ function Create() {
 		setInputPackage({ ...inputPackage, [name]: value });
 	};
 
-	const handleSubmitPackage = (e) => {
+	const handleSubmitPackage = async (e) => {
 		e.preventDefault();
-		console.log(inputPackage);
 		try {
+			console.log(inputPackage.address);
+			setInputPackage({
+				...inputPackage,
+				address: inputPackage.address.replace("#", ""),
+			});
+
+			try {
+				const geocodeResponse = await fetch(
+					`https://api.mapbox.com/geocoding/v5/mapbox.places/${inputPackage.address}.json?access_token=pk.eyJ1Ijoid3NhbGFzMTkiLCJhIjoiY2xlcHg0dnJtMDEwMTN6cXUyejF2NHB1ayJ9.visqsU_0hEQugqgcJbHBbQ`
+				);
+				const geocodeData = await geocodeResponse.json();
+				const coordinates = geocodeData.features[0].center;
+				const latitude = coordinates[1];
+				const longitude = coordinates[0];
+				const coordinate = [longitude, latitude];
+
+				setCoord(coordinate);
+				/* setInputPackage({
+					...inputPackage,
+					coordinates: coord,
+				}); */
+				console.log(inputPackage.coordinates);
+			} catch (error) {
+				console.log(error);
+			}
+			console.log(coord);
+			setInputPackage({
+				...inputPackage,
+				coordinates: coord,
+			});
+			console.log(inputPackage);
+			if (Object.values(inputPackage).some((item) => item.length === 0)) {
+				throw new Error("All fields must be complete");
+			}
+
 			dispatch(createPackage(inputPackage));
 			toast({
 				title: "Package Created",
@@ -55,13 +94,22 @@ function Create() {
 				notes: "",
 				user: "",
 				image: "",
+				address: "",
 			});
 		} catch (error) {
 			console.log(error);
+			toast({
+				title: "Error",
+				description: `an error ocurred creating ${inputPackage.name} package`,
+				status: "error",
+				duration: 2000,
+				isClosable: true,
+			});
 		}
 	};
-	const handleSubmitUser = (e) => {
+	const handleSubmitUser = async (e) => {
 		e.preventDefault();
+
 		let info = { ...inputUser, role: "op" };
 		try {
 			dispatch(createUser(info));
@@ -90,7 +138,7 @@ function Create() {
 		reader.readAsDataURL(file);
 		reader.onload = () => {
 			const imageDataUrl = reader.result;
-			console.log(JSON.stringify(imageDataUrl));
+
 			// You can send the imageDataUrl to your backend to store it as a string
 			setInputPackage({
 				...inputPackage,
@@ -159,8 +207,17 @@ function Create() {
 							id="name"
 							w={"20%"}
 						/>
+						<FormLabel>Address:</FormLabel>
+						<Input
+							onChange={handlePackageInput}
+							value={inputPackage.address}
+							name="address"
+							id="address"
+							w={"20%"}
+						/>
 						<FormLabel>Notes:</FormLabel>
 						<Input
+							maxLength={100}
 							onChange={handlePackageInput}
 							value={inputPackage.notes}
 							name="notes"
@@ -181,6 +238,7 @@ function Create() {
 							textColor={"gray.500"}
 							className="userSelect"
 							onChange={handlePackageInput}
+							value={inputPackage.user}
 							name="user"
 							w={"20%"}
 							placeholder="Select user"

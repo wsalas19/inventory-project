@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUserPackage, cleanPackageSession } from "./package";
+import { getUserPackage, cleanPackageSession, getAllPackages } from "./package";
 import { setUserSesion, cleanUserSession, getAllUsers } from "./users";
 
 export const setUser = (input) => async (dispatch) => {
@@ -48,6 +48,14 @@ export const createPackage = (input) => async () => {
 	try {
 		let res = await axios.post("/packages", input);
 		return res.data;
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const getAllPackagesAdmin = () => async (dispatch) => {
+	try {
+		let res = await axios("/packages");
+		return dispatch(getAllPackages(res.data));
 	} catch (error) {
 		console.log(error);
 	}
