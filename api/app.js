@@ -17,11 +17,7 @@ const URI = process.env.MONGO_URI;
 
 var app = express();
 
-app.use(
-	cors({
-		origin: "https://inventory-project.vercel.app",
-	})
-);
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
