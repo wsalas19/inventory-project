@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPackageUser } from "../redux/actions";
 
@@ -8,13 +8,16 @@ function Info() {
 	const user = useSelector((state) => state.users.user);
 	const { username, email, role } = user.user;
 	const p = user.user.package;
+	const dataFetched = useRef(false);
 	useEffect(() => {
+		if (dataFetched.current) return;
+		dataFetched.current = true;
 		if (role === "op") {
 			dispatch(getPackageUser(p));
 		}
 	}, []);
 	const userPackage = useSelector((state) => state.packages.package);
-	const coordinates = userPackage.coordinates;
+	//const coordinates = userPackage.coordinates;
 	return (
 		<>
 			<Box p={5} w={"75%"}>

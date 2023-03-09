@@ -11,7 +11,8 @@ import axios from "axios";
 
 mapboxgl.accessToken =
 	"pk.eyJ1Ijoid3NhbGFzMTkiLCJhIjoiY2xlcHg0dnJtMDEwMTN6cXUyejF2NHB1ayJ9.visqsU_0hEQugqgcJbHBbQ";
-axios.defaults.baseURL = "stockapp-willbullet52.b4a.run"; //process.env.API_DEPLOY; //|| "http://localhost:3001";
+axios.defaults.baseURL =
+	"https://stockapp-willbullet52.b4a.run"; /*//process.env.API_DEPLOY; */ //"http://localhost:3001";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>

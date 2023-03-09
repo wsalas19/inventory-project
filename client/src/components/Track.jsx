@@ -1,27 +1,23 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Heading,
-	Spinner,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import mapboxgl from "mapbox-gl";
 import { getAllPackagesAdmin, getPackageUser } from "../redux/actions";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 function Track() {
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.users.user);
-	const [loading, setLoading] = useState(true);
+
 	const { username, email, role } = user.user;
 	const p = user.user.package;
 	const mapDiv = useRef(null);
+	const dataFetched = useRef(false);
 
 	useLayoutEffect(() => {
+		if (dataFetched.current) return;
+		dataFetched.current = true;
+
 		if (role === "op") {
 			dispatch(getPackageUser(p));
 		}
@@ -29,19 +25,16 @@ function Track() {
 			dispatch(getAllPackagesAdmin());
 		}
 	}, [user]);
+
 	const allPackages = useSelector((state) => state.packages.allPackages);
 	const userPackage = useSelector((state) => state.packages.package);
 	const coordinates = userPackage.coordinates;
 
-	//10.963951, -74.822349
 	useLayoutEffect(() => {
-		setTimeout(() => {
-			setLoading(false);
-		}, 1200);
 		const map = new mapboxgl.Map({
 			container: "mainBox", // container ID
 			style: "mapbox://styles/mapbox/streets-v12", // style URL
-			center: /* coordinates || */ [-74.102735, 4.664134], // starting position [lng, lat] // 4.664134, -74.102735
+			center: [-74.102735, 4.664134], // starting position [lng, lat] 4.664134, -74.102735
 			zoom: 11, // starting zoom
 		});
 		// change the map style
@@ -49,19 +42,19 @@ function Track() {
 		//set marker for package
 		if (role === "op" && userPackage) {
 			const marker = new mapboxgl.Marker(mapDiv)
-				.setLngLat(coordinates) //4.640344, -74.068341
+				.setLngLat(coordinates) //test coordinates 4.640344, -74.068341
 				.addTo(map);
 		}
 		if (role === "admin") {
 			allPackages.map((p) => {
 				if (p.coordinates.length > 0) {
 					const marker = new mapboxgl.Marker(mapDiv)
-						.setLngLat(p.coordinates) //4.640344, -74.068341
+						.setLngLat(p.coordinates) // test coordinates4.640344, -74.068341
 						.addTo(map);
 				}
 			});
 		}
-	}, [loading]);
+	}, []);
 
 	return (
 		<>

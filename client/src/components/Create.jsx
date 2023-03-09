@@ -10,10 +10,8 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { createPackage, createUser, getAllUsersLoaded } from "../redux/actions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import mapboxgl from "mapbox-gl";
-import axios from "axios";
 
 function Create() {
 	const toast = useToast();
@@ -146,8 +144,10 @@ function Create() {
 			});
 		};
 	}
-
+	const dataFetched = useRef(false);
 	useEffect(() => {
+		if (dataFetched.current) return;
+		dataFetched.current = true;
 		dispatch(getAllUsersLoaded());
 	}, [create]);
 
